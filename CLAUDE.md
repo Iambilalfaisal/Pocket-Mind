@@ -177,8 +177,9 @@ All workflows use path filters and `working-directory` so mobile and (later) ml 
 |---|---|---|
 | 0 | Scaffold & tooling: Expo app in `apps/mobile`, deps, strict TS, `@/` alias, ESLint (incl. the import-boundary rules), Prettier, jest-expo, `.gitattributes`, `.gitignore`, docs stubs (ARCHITECTURE, DEBUGGING, DECISIONS, LEARNINGS). Create folders only when they get real code | `chore/mobile-scaffold` |
 | 1 | Build pipelines: `app.config.ts` (PocketMind, slug `pocketmind`, id `com.bilalfaisal.pocketmind`, llama.rn plugin with SIDELOAD switch, iOS mic usage string), three workflows, `docs/BUILD_AND_INSTALL.md`, minimal placeholder screen for the first sideload | `ci/mobile-build-pipelines` |
+| 2-pre | `AppError`, scoped logger + ring buffer, `appConfig` (storage and the engine both need them) | `feat/core-foundations` |
 | 2a | Model catalog + storage/downloads | `feat/model-storage` |
-| 2b | Logger, AppError, LLM engine, history budgeting, think stripping, prompts, metrics | `feat/llm-engine` |
+| 2b | LLM engine, history budgeting, think stripping, prompts, metrics | `feat/llm-engine` |
 | 2c | TTS service | `feat/tts` |
 | 3 | Models screen, chat screen, offline badge, stats, theme, diagnostics screen | `feat/models-screen`, `feat/chat-screen`, `feat/diagnostics-screen` |
 | 4 | Hardening: AppState, low memory, load failures, Android check | `fix/...` / `feat/hardening` |

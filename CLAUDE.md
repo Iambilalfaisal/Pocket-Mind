@@ -97,7 +97,7 @@ src/
       llm.errors.ts         LLM_* error codes
     speech/                 TextToSpeech.ts, expoSpeechTts.ts (ONLY file importing expo-speech), speech.errors.ts
     storage/                modelFiles.ts (ONLY file importing expo-file-system), downloadTask.ts, diskSpace.ts, storage.errors.ts
-    models/                 catalog.ts (data), catalog.types.ts, catalogValidation.ts
+    models/                 catalog.ts (data), catalog.types.ts, catalogValidation.ts, models.errors.ts (MODELS_* codes)
     metrics/                generationMetrics.ts
     logging/                logger.ts — scoped loggers + in-memory ring buffer
     errors/                 AppError.ts — base class with code, userMessage, cause
@@ -109,12 +109,12 @@ src/
 
 ### Traceability conventions (mandatory)
 
-1. **Same shape everywhere.** Every feature: `components/`, `hooks/`, `<name>.store.ts`, `<name>.types.ts`, `index.ts`. Every core module: implementation files, `<name>.types.ts`, `<name>.errors.ts` when it can fail, `index.ts`.
+1. **Same shape everywhere.** Apply it to the parts a feature or module actually has; never create empty files to fill the shape. Every feature: `components/`, `hooks/`, `<name>.store.ts`, `<name>.types.ts`, `index.ts`. Every core module: implementation files, `<name>.types.ts`, `<name>.errors.ts` when it can fail, `index.ts`.
 2. **File names say what is inside.** `*.store.ts`, `*.types.ts`, `*.errors.ts`, `*.test.ts`, hooks `use*.ts`, components PascalCase `.tsx`. One main export per file; file name matches the export.
 3. **One native library, one file.** Each third-party native library is imported in exactly one wrapper file (listed above). Nothing else may import it — enforce with ESLint `no-restricted-imports`.
 4. **Imports between modules go through `index.ts` only.** Enforce with ESLint. Dependency direction: `app/ -> features/ -> core/, ui/, prompts/, i18n/`. Never reverse. `core/` never imports React or features.
 5. **Module headers.** Each `index.ts` starts with a 2–3 line comment: what this module is responsible for, and what it is not.
-6. **Error codes name their module.** `LLM_LOAD_FAILED`, `LLM_CONTEXT_OVERFLOW`, `STORAGE_DISK_FULL`, `STORAGE_DOWNLOAD_FAILED`, `SPEECH_TTS_UNAVAILABLE`, etc. The prefix maps to the folder. Error UI shows the friendly message plus the code in small text.
+6. **Error codes name their module.** `LLM_LOAD_FAILED`, `LLM_CONTEXT_OVERFLOW`, `STORAGE_DISK_FULL`, `STORAGE_DOWNLOAD_FAILED`, `SPEECH_TTS_UNAVAILABLE`, `MODELS_CATALOG_INVALID`, etc. The prefix maps to the folder. Error UI shows the friendly message plus the code in small text.
 7. **Scoped logging.** `const log = createLogger('core/llm')` — the scope is the folder path, so every log line points to its folder. Log lifecycle events: model load start/end (ms), generation start / first token / end (tokens/sec), download start / every 25% / end, and every error with its code. **Never log message text — only lengths (privacy).**
 8. **Diagnostics screen.** There is no Xcode console on Windows and release builds have no Metro, so the logger keeps the last ~500 entries in memory. The Diagnostics screen shows them with app version, build type, selected model, llama.rn version and OS, plus a Share button (React Native `Share`; no new native dependency).
 9. **Tests sit next to the code they test** (`historyBudget.ts` + `historyBudget.test.ts`).
@@ -157,7 +157,7 @@ Entry fields: `id`, `displayName`, `url`, `fileName`, `sizeBytes`, `quantization
 
 All workflows use path filters and `working-directory` so mobile and (later) ml run independently.
 
-- **`mobile-ci.yml`** (ubuntu; push + PR touching `apps/mobile/**`): `npm ci` → lint → typecheck → test → `npx expo export` for ios and android. Required status check on `main`.
+- **`mobile-ci.yml`** (ubuntu; push + PR touching `apps/mobile/**`): `npm ci` → lint → typecheck → test → `npx expo export` for ios and android. Required status check on `main`. The job must be named exactly `mobile-ci`, or branch protection cannot find it.
 - **`mobile-ios.yml`** (macOS; manual, input `build_type: Debug | Release`): newest non-beta Xcode, Node 22, `npm ci`, `SIDELOAD=1`, `npx expo prebuild --platform ios`, `xcodebuild` for `generic/platform=iOS` with `CODE_SIGNING_ALLOWED=NO`, package `Payload/` → `PocketMind-<build_type>.ipa`, upload artifact, print log tail on failure.
 - **`mobile-android.yml`** (ubuntu; manual): Node 22, JDK 17, `npx expo prebuild --platform android`, `./gradlew assembleRelease -PreactNativeArchitectures=arm64-v8a,x86_64`, upload APK.
 - npm cache keyed on `apps/mobile/package-lock.json`; one concurrency group per workflow.

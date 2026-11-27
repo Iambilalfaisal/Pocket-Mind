@@ -96,7 +96,9 @@ src/
       llm.types.ts
       llm.errors.ts         LLM_* error codes
     speech/                 TextToSpeech.ts, expoSpeechTts.ts (ONLY file importing expo-speech), speech.errors.ts
-    storage/                modelFiles.ts (ONLY file importing expo-file-system), downloadTask.ts, diskSpace.ts, storage.errors.ts
+    storage/                modelFiles.ts (ONLY file importing expo-file-system), downloadTask.ts (one download: .part -> verify -> rename),
+                            modelStorage.ts (one-at-a-time, isDownloaded, delete, stale cleanup), defaultModelStorage.ts (the app instance),
+                            diskSpace.ts, storage.types.ts, storage.errors.ts (STORAGE_* codes), fakeModelFiles.ts (test double)
     models/                 catalog.ts (data), catalog.types.ts, catalogValidation.ts, models.errors.ts (MODELS_* codes)
     metrics/                generationMetrics.ts
     logging/                logger.ts — scoped loggers + in-memory ring buffer

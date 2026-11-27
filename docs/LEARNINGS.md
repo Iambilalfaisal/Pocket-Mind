@@ -25,3 +25,9 @@ Versions chosen, surprises, measurements.
 
 ` after the assistant header unless `enable_thinking` is defined and true. So thinking is **off by default** with this file; pass `enable_thinking: false` explicitly anyway and still strip `<think>` defensively.
 - A request to a `huggingface.co/.../resolve/...` URL redirects (HTTP 302) to a CDN host. The allowlist in `appConfig.allowedDownloadHosts` only checks the catalog URL; the redirect target is outside our control.
+
+## Phase 2a: storage (2026-11-27)
+- `expo-file-system/legacy`: `createDownloadResumable(...).downloadAsync()` resolves to `undefined` when cancelled, and to a result with the HTTP `status` otherwise. A 404 still resolves, so the status must be checked or an error page would be saved as a "model".
+- The legacy API has no backup-exclusion option (searched the types for backup/iCloud).
+- Reading the 4 magic bytes: `readAsStringAsync(uri, { encoding: 'base64', position: 0, length: 4 })` then `atob`. `modelFiles.ts` is the only code that cannot be unit-tested without a device; everything else runs against `fakeModelFiles.ts`.
+- Unverified until a device build: real download speed, background behaviour, and that `getFreeDiskStorageAsync` is accurate on iOS 26.

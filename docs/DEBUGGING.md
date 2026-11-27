@@ -6,7 +6,7 @@ Maps each symptom to the folder or file to open.
 |---|---|
 | _Filled in as modules and error codes are added._ | |
 
-Also covers: reading the logs, getting logs off the phone (Diagnostics → Share), and which workflow step fails for which kind of build error.
+Also covers: reading the logs (below), getting logs off the phone (Diagnostics → Share), and which workflow step fails for which kind of build error.
 
 ## Build failures
 
@@ -19,3 +19,8 @@ Also covers: reading the logs, getting logs off the phone (Diagnostics → Share
 | `xcodebuild` (iOS) | Native compile or pod error | "Print xcodebuild log tail" step; full `xcodebuild.log` |
 | Package .ipa | `.app` not at `build/Build/Products/<build_type>-iphoneos/` | Build step output |
 | `gradlew assembleRelease` (Android) | Native compile or Gradle error | The step log |
+
+## Reading the logs
+Every line is tagged with a scope that is the folder path of the module that wrote it, e.g. `[core/llm] model load start`. Error lines end with the error code in brackets, e.g. `(STORAGE_DISK_FULL)`; the code prefix names the folder (`STORAGE_` → `core/storage/`). Logs never contain message text, only lengths and counts.
+
+The last 500 entries are kept in memory (`core/logging`, size set in `core/config/appConfig.ts`) and will be shown on the Diagnostics screen (Phase 3). Until that screen exists, logs are visible only in the Metro console during development.

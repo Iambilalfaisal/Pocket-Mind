@@ -7,4 +7,6 @@ export const appConfig = {
   diskHeadroomBytes: 500 * MEGABYTE,
   /** Log entries kept in memory for the Diagnostics screen. */
   logBufferCapacity: 500,
+  /** The only hosts a catalog download URL may point at (privacy: no other network calls). */
+  allowedDownloadHosts: ['huggingface.co'],
 } as const;

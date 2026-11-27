@@ -140,11 +140,11 @@ Screens reach services only through the `LLMEngine`, `TextToSpeech` and `ModelSt
 
 ## Model catalog (verify before committing)
 
-Entry fields: `id`, `displayName`, `url`, `fileName`, `sizeBytes`, `quantization`, `license`, `contextDefault`, `promptFormatNotes`.
+Entry fields: `id`, `displayName`, `url`, `revision`, `fileName`, `sizeBytes`, `quantization`, `license`, `contextDefault`, `promptFormatNotes`. Every `url` is pinned to a Hugging Face commit (`/resolve/<revision>/`), never `main`, so an upstream re-upload cannot change what users download.
 
-- `qwen3.5-2b` — find the exact Q4_K_M GGUF on Hugging Face (prefer the official Qwen org, else unsloth, bartowski or ggml-org); record URL and byte size from the HF API.
-- `qwen2.5-1.5b` — https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF/resolve/main/qwen2.5-1.5b-instruct-q4_k_m.gguf
-- `llama3.2-3b` — https://huggingface.co/bartowski/Llama-3.2-3B-Instruct-GGUF/resolve/main/Llama-3.2-3B-Instruct-Q4_K_M.gguf
+- `qwen3.5-2b` — `unsloth/Qwen3.5-2B-GGUF`, `Qwen3.5-2B-Q4_K_M.gguf` (the official Qwen and ggml-org orgs publish no Qwen3.5-2B GGUF; unsloth is Apache-2.0, 1,280,835,840 bytes).
+- `qwen2.5-1.5b` — `Qwen/Qwen2.5-1.5B-Instruct-GGUF`, `qwen2.5-1.5b-instruct-q4_k_m.gguf`
+- `llama3.2-3b` — `bartowski/Llama-3.2-3B-Instruct-GGUF`, `Llama-3.2-3B-Instruct-Q4_K_M.gguf`
 
 ## Product behaviour (first demo)
 

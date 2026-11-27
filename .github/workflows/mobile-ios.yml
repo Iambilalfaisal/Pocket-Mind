@@ -1,0 +1,64 @@
+name: mobile-ios
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: Xcode build configuration
+        type: choice
+        options: [Debug, Release]
+        default: Release
+
+concurrency:
+  group: mobile-ios-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: apps/mobile
+
+env:
+  SIDELOAD: '1'
+  BUILD_TYPE: ${{ inputs.build_type }}
+
+jobs:
+  build-ipa:
+    runs-on: macos-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/mobile/package-lock.json
+      - run: npm ci
+      - name: Prebuild (generate ios/)
+        run: npx expo prebuild --platform ios
+      - name: Build with xcodebuild (unsigned)
+        run: |
+          set -o pipefail
+          xcodebuild \
+            -workspace ios/PocketMind.xcworkspace \
+            -scheme PocketMind \
+            -configuration "$BUILD_TYPE" \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            build 2>&1 | tee xcodebuild.log
+      - name: Package .ipa
+        run: |
+          mkdir -p Payload
+          cp -R "build/Build/Products/${BUILD_TYPE}-iphoneos/PocketMind.app" Payload/
+          zip -qry "PocketMind-${BUILD_TYPE}.ipa" Payload
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PocketMind-${{ inputs.build_type }}-ipa
+          path: apps/mobile/PocketMind-${{ inputs.build_type }}.ipa
+          if-no-files-found: error
+      - name: Print xcodebuild log tail
+        if: failure()
+        run: tail -n 200 xcodebuild.log

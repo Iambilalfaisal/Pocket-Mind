@@ -9,3 +9,9 @@ Versions chosen, surprises, measurements.
 - `react-dom` is installed at 19.3.0 only because npm auto-installs expo-router's optional peer and it must match `react`.
 - On Windows, `npm install llama.rn` fails in its install script (`download-native-artifacts.js`): Git Bash `tar` reads `C:\...` as a remote host. Install locally with `--ignore-scripts`; the script is only needed for native builds, which run on Linux/macOS CI.
 - `jest.mock('llama.rn', () => require('llama.rn/jest/mock'))` needs `llama.rn` added to jest `transformIgnorePatterns` (see `jest.config.js`).
+
+## Phase 1 (2026-11-27)
+- llama.rn 0.12.9's plugin deprecates `enableOpenCL`; we use `enableOpenCLAndHexagon`.
+- The plugin adds its memory entitlements only when `NODE_ENV=production` (or a matching EAS profile), and `SIDELOAD=1` turns them off for free-Apple-ID builds. Confirmed locally with `expo config --type introspect`.
+- `newArchEnabled` is not an `ExpoConfig` field in SDK 58 (the New Architecture is always on), so it is not set.
+- Workflows are untested until their first GitHub run. Runner image and Xcode version used: _record after the first iOS run_.

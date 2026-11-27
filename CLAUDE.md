@@ -57,7 +57,7 @@ Each native dependency change needs a new cloud build and re-sideload. The nativ
 
 ### llama.rn notes
 
-- Requires the New Architecture. Expo config plugin: `['llama.rn', { enableEntitlements, forceCxx20: true, enableOpenCL: true }]`. `enableEntitlements` is `false` when `process.env.SIDELOAD === '1'`, `true` otherwise.
+- Requires the New Architecture. Expo config plugin: `['llama.rn', { enableEntitlements, forceCxx20: true, enableOpenCLAndHexagon: true }]`. `enableEntitlements` is `false` when `process.env.SIDELOAD === '1'`, `true` otherwise.
 - `initLlama({ model, n_ctx, n_gpu_layers: 99 })`; `context.completion({ messages, n_predict, stop, temperature, ... }, onPartial)` returns text and timings; also `stopCompletion()`, `tokenize()`, `release()`.
 - Jest mock: `jest.mock('llama.rn', () => require('llama.rn/jest/mock'))`.
 - Android supports arm64-v8a and x86_64 only.
